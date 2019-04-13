@@ -10,6 +10,12 @@ Welcome any PR
 4. Run `flutter packages get`
 5. Run `flutter run`
 
+`flutter run` will run the application on simulator
+
+For better performance, you can run the application in release mode by using `flutter run --release`
+
+Find out more in [here](https://flutter.dev/docs/testing/build-modes)
+
 ## Functions
 - [x] read post
 - [x] change category
