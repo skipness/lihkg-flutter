@@ -32,8 +32,9 @@ class ThreadBloc extends Bloc<ThreadEvent, ThreadState> {
       page = event.page;
       try {
         if (currentState is ThreadUninitialized) {
-          final thread = await _fetchThread(page);
-          final items = thread.itemData;
+          final ThreadResponse thread = await _fetchThread(page);
+          final List<ThreadItem> items = thread.itemData
+            ..removeWhere((ThreadItem item) => item.status != "1");
           this.thread = thread;
           yield ThreadLoaded(
               thread: thread,
@@ -46,8 +47,9 @@ class ThreadBloc extends Bloc<ThreadEvent, ThreadState> {
         }
 
         if (currentState is ThreadLoaded && !_hasReachedEnd(currentState)) {
-          final thread = await _fetchThread(page);
-          final items = thread.itemData;
+          final ThreadResponse thread = await _fetchThread(page);
+          final List<ThreadItem> items = thread.itemData
+            ..removeWhere((ThreadItem item) => item.status != "1");
           this.thread = thread;
           yield ThreadLoaded(
               thread: thread,

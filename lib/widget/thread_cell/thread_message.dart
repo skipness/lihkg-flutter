@@ -8,7 +8,7 @@ import 'package:lihkg_flutter/util/util.dart';
 
 class ThreadMessage extends StatelessWidget {
   final ThreadItem threadItem;
-  final isQuote;
+  final bool isQuote;
 
   const ThreadMessage({@required this.threadItem, this.isQuote = false});
 
@@ -39,10 +39,7 @@ class ThreadMessage extends StatelessWidget {
                           : theme.textTheme.body1.color)),
                   child: HtmlWidget(linkify(threadItem.msg),
                       wfBuilder: (context) => LihkgWidgetFactory(context)))
-              : Center(
-                  child: Text('回覆#${threadItem.msgNum}已被移除',
-                      style: theme.textTheme.subtitle.copyWith(
-                          color: theme.hintColor, fontWeight: FontWeight.bold)))
+              : const SizedBox()
         ]);
   }
 }
