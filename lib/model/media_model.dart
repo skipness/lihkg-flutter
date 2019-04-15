@@ -14,7 +14,7 @@ String mediaToJson(Media data) {
 class Media {
   int success;
   int serverTime;
-  Response response;
+  MediaResponse response;
 
   Media({
     this.success,
@@ -25,7 +25,7 @@ class Media {
   factory Media.fromJson(Map<String, dynamic> json) => new Media(
         success: json["success"],
         serverTime: json["server_time"],
-        response: Response.fromJson(json["response"]),
+        response: MediaResponse.fromJson(json["response"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,18 +35,18 @@ class Media {
       };
 }
 
-class Response {
+class MediaResponse {
   String threadId;
   String title;
   List<MediaContent> mediaContents;
 
-  Response({
+  MediaResponse({
     this.threadId,
     this.title,
     this.mediaContents,
   });
 
-  factory Response.fromJson(Map<String, dynamic> json) => new Response(
+  factory MediaResponse.fromJson(Map<String, dynamic> json) => new MediaResponse(
         threadId: json["thread_id"],
         title: json["title"],
         mediaContents: new List<MediaContent>.from(
