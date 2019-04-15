@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lihkg_flutter/widget/common/common_widget.dart';
-import 'package:lihkg_flutter/widget/category/category_cell.dart';
+import 'package:lihkg_flutter/widget/category/category_cell/category_cell.dart';
 import 'package:lihkg_flutter/model/model.dart';
 import 'package:lihkg_flutter/page/thread.dart';
 
