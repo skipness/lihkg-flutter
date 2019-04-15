@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share/share.dart';
 import 'package:lihkg_flutter/bloc/bloc.dart';
-import 'package:lihkg_flutter/page/media_list.dart';
+import 'package:lihkg_flutter/page/page.dart';
 import 'package:lihkg_flutter/widget/thread/thread_modal_bottom_sheet.dart';
 
 class ThreadBottomAppBar extends StatefulWidget {
