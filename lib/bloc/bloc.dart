@@ -35,3 +35,7 @@ export 'package:lihkg_flutter/bloc/authentication/authentication_state.dart';
 export 'package:lihkg_flutter/bloc/preference/preference_bloc.dart';
 export 'package:lihkg_flutter/bloc/preference/preference_event.dart';
 export 'package:lihkg_flutter/bloc/preference/preference_state.dart';
+
+export 'package:lihkg_flutter/bloc/profile/profile_bloc.dart';
+export 'package:lihkg_flutter/bloc/profile/profile_event.dart';
+export 'package:lihkg_flutter/bloc/profile/profile_state.dart';
