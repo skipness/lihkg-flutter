@@ -1,0 +1,12 @@
+export 'package:lihkg_flutter/page/profile/profile.dart';
+export 'package:lihkg_flutter/page/category_list.dart';
+export 'package:lihkg_flutter/page/category.dart';
+export 'package:lihkg_flutter/page/home.dart';
+export 'package:lihkg_flutter/page/login.dart';
+export 'package:lihkg_flutter/page/media/media_list.dart';
+export 'package:lihkg_flutter/page/media/media_view.dart';
+export 'package:lihkg_flutter/page/reply.dart';
+export 'package:lihkg_flutter/page/search.dart';
+export 'package:lihkg_flutter/page/setting.dart';
+export 'package:lihkg_flutter/page/thread.dart';
+export 'package:lihkg_flutter/page/user_profile.dart';
