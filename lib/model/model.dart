@@ -10,3 +10,4 @@ export 'package:lihkg_flutter/model/preference.dart';
 export 'package:lihkg_flutter/model/user_profile.dart';
 export 'package:lihkg_flutter/model/login.dart';
 export 'package:lihkg_flutter/model/me.dart';
+export 'package:lihkg_flutter/model/profile.dart';
