@@ -4,7 +4,7 @@ import 'package:lihkg_flutter/bloc/bloc.dart';
 import 'package:lihkg_flutter/model/model.dart';
 import 'package:lihkg_flutter/widget/media/media_cell.dart';
 import 'package:lihkg_flutter/widget/media/empty_view.dart';
-import 'package:lihkg_flutter/page/media_view.dart';
+import 'package:lihkg_flutter/page/page.dart';
 
 class MediaList extends StatefulWidget {
   final String threadId;
