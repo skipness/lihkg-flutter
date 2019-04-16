@@ -1,29 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
-import 'package:lihkg_flutter/networking/http_client.dart';
+import 'package:lihkg_flutter/networking/web_client.dart';
 import 'package:lihkg_flutter/model/model.dart';
 
 class ApiClient {
-  static const String _baseUrl = 'https://lihkg.com/api_v2';
-  HttpClient _httpClient = HttpClient();
+  final String _baseUrl = 'https://lihkg.com/api_v2';
+  WebClient _webClient;
 
-  Map<String, String> _createHeader(
-      String method, String url, String userId, String token) {
-    final String digest = sha1
-        .convert(utf8.encode(
-            'jeams\$$method\$$url\$\$$token\$${DateTime.now().millisecondsSinceEpoch}'))
-        .toString();
-    return {
-      "x-li-user": userId,
-      "x-li-digest": digest,
-      "x-li-request-time": "${DateTime.now().millisecondsSinceEpoch}"
-    };
+  ApiClient({String userId, String token}) {
+    _webClient = WebClient(userId: userId, token: token);
   }
 
   Future<SysProps> fetchSysProps() async {
-    final response = await _httpClient.get('$_baseUrl/system/property');
-    return SysProps.fromJson(response);
+    final response = await _webClient.get('$_baseUrl/system/property');
+    return SysProps.fromJson(json.decode(response.body));
   }
 
   Future<Category> fetchCategory(
@@ -39,21 +29,21 @@ class ApiClient {
         queryString += '&$key=$value';
       }
     });
-    final response = await _httpClient
+    final response = await _webClient
         .get('$url?cat_id=$catId&page=$page&count=$count&$queryString');
-    return Category.fromJson(response);
+    return Category.fromJson(json.decode(response.body));
   }
 
   Future<Thread> fetchThread({String threadId, int page}) async {
-    final response = await _httpClient
+    final response = await _webClient
         .get('$_baseUrl/thread/$threadId/page/$page?order=reply_time');
-    return Thread.fromJson(response);
+    return Thread.fromJson(json.decode(response.body));
   }
 
   Future<Media> fetchMedia({String threadId, bool includeLink}) async {
-    final response = await _httpClient.get(
+    final response = await _webClient.get(
         '$_baseUrl/thread/$threadId/media?include_link=${includeLink ? 1 : 0}');
-    return Media.fromJson(response);
+    return Media.fromJson(json.decode(response.body));
   }
 
   Future<UserProfile> fetchUserProfile({
@@ -61,29 +51,27 @@ class ApiClient {
     int page,
     String query,
   }) async {
-    final response = await _httpClient
+    final response = await _webClient
         .get('$_baseUrl/user/$userId/thread?page=$page&sort=$query');
-    return UserProfile.fromJson(response);
+    return UserProfile.fromJson(json.decode(response.body));
   }
 
   Future<UserProfile> search(
       String query, int page, String sort, String catId) async {
-    final response = await _httpClient
+    final response = await _webClient
         .get('$_baseUrl/thread/search?q=$query&page=$page&count=30&sort=$sort');
     // &cat_id=$catId
-    return UserProfile.fromJson(response);
+    return UserProfile.fromJson(json.decode(response.body));
   }
 
-  Future<Login> login(String email, String password) async {
-    final Map<String, String> body = {'email': email, 'password': password};
-    final response = await _httpClient.post('$_baseUrl/auth/login', body);
-    return Login.fromJson(response);
-  }
+  // Future<Login> login(String email, String password) async {
+  //   final Map<String, String> body = {'email': email, 'password': password};
+  //   final response = await _webClient.post('$_baseUrl/auth/login', body);
+  //   return Login.fromJson(json.decode(response.body));
+  // }
 
   Future<Profile> fetchProfile(String userId, String token) async {
-    final String url = '$_baseUrl/user/$userId/profile';
-    final response = await _httpClient.get(url,
-        headers: _createHeader('get', url, userId, token));
-    return Profile.fromJson(response);
+    final response = await _webClient.get('$_baseUrl/user/$userId/profile');
+    return Profile.fromJson(json.decode(response.body));
   }
 }
