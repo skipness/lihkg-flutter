@@ -7,19 +7,19 @@ abstract class AuthenticationEvent extends Equatable {
 
 class AppStarted extends AuthenticationEvent {
   @override
-  String toString() => 'AppStarted';
+  String toString() => 'App Started';
 }
 
 class LoggedIn extends AuthenticationEvent {
-  final String token;
+  final Map<String, String> credential;
 
-  LoggedIn({@required this.token}) : super([token]);
+  LoggedIn({@required this.credential}) : super([credential]);
 
   @override
-  String toString() => 'LoggedIn { token: $token }';
+  String toString() => 'Logged In { credential: $credential }';
 }
 
 class LoggedOut extends AuthenticationEvent {
   @override
-  String toString() => 'LoggedOut';
+  String toString() => 'Logged Out';
 }

@@ -6,16 +6,13 @@ import 'package:lihkg_flutter/bloc/bloc.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final MeRepository userRepository;
-  String _token;
+  final MeRepository meRepository;
 
-  AuthenticationBloc({@required this.userRepository})
-      : assert(userRepository != null);
+  AuthenticationBloc({@required this.meRepository})
+      : assert(meRepository != null);
 
   @override
   AuthenticationState get initialState => AuthenticationUninitialized();
-
-  get token => _token;
 
   @override
   Stream<AuthenticationState> mapEventToState(
@@ -23,9 +20,9 @@ class AuthenticationBloc
     AuthenticationEvent event,
   ) async* {
     if (event is AppStarted) {
-      final bool hasToken = await userRepository.hasToken();
-
-      if (hasToken) {
+      final bool hasToken = await meRepository.hasToken();
+      final bool hasUserId = await meRepository.hasUserId();
+      if (hasToken && hasUserId) {
         yield AuthenticationAuthenticated();
       } else {
         yield AuthenticationUnauthenticated();
@@ -34,15 +31,15 @@ class AuthenticationBloc
 
     if (event is LoggedIn) {
       yield AuthenticationLoading();
-      await userRepository.persistToken(event.token);
-      _token = event.token;
+      await meRepository.persistToken(event.credential["token"]);
+      await meRepository.persistUserId(event.credential["userId"]);
       yield AuthenticationAuthenticated();
     }
 
     if (event is LoggedOut) {
       yield AuthenticationLoading();
-      await userRepository.deleteToken();
-      _token = null;
+      await meRepository.deleteToken();
+      await meRepository.deleteUserId();
       yield AuthenticationUnauthenticated();
     }
   }

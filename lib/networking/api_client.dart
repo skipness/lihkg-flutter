@@ -1,10 +1,25 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:lihkg_flutter/networking/http_client.dart';
 import 'package:lihkg_flutter/model/model.dart';
 
 class ApiClient {
   static const String _baseUrl = 'https://lihkg.com/api_v2';
   HttpClient _httpClient = HttpClient();
+
+  Map<String, String> _createHeader(
+      String method, String url, String userId, String token) {
+    final String digest = sha1
+        .convert(utf8.encode(
+            'jeams\$$method\$$url\$\$$token\$${DateTime.now().millisecondsSinceEpoch}'))
+        .toString();
+    return {
+      "x-li-user": userId,
+      "x-li-digest": digest,
+      "x-li-request-time": "${DateTime.now().millisecondsSinceEpoch}"
+    };
+  }
 
   Future<SysProps> fetchSysProps() async {
     final response = await _httpClient.get('$_baseUrl/system/property');
@@ -62,7 +77,13 @@ class ApiClient {
   Future<Login> login(String email, String password) async {
     final Map<String, String> body = {'email': email, 'password': password};
     final response = await _httpClient.post('$_baseUrl/auth/login', body);
-    print(response);
     return Login.fromJson(response);
+  }
+
+  Future<Profile> fetchProfile(String userId, String token) async {
+    final String url = '$_baseUrl/user/$userId/profile';
+    final response = await _httpClient.get(url,
+        headers: _createHeader('get', url, userId, token));
+    return Profile.fromJson(response);
   }
 }

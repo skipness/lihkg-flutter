@@ -5,15 +5,15 @@ import 'package:lihkg_flutter/bloc/bloc.dart';
 import 'package:lihkg_flutter/repository/repository.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final MeRepository userRepository;
+  final MeRepository meRepository;
   final AuthenticationBloc authenticationBloc;
   final RegExp _emailRegex = RegExp(
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
 
   LoginBloc({
-    @required this.userRepository,
+    @required this.meRepository,
     @required this.authenticationBloc,
-  })  : assert(userRepository != null),
+  })  : assert(meRepository != null),
         assert(authenticationBloc != null);
 
   LoginState get initialState => LoginInitial();
@@ -27,12 +27,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield LoginLoading();
 
       try {
-        final token = await userRepository.authenticate(
+        final credential = await meRepository.authenticate(
           email: event.email,
           password: event.password,
         );
 
-        authenticationBloc.dispatch(LoggedIn(token: token));
+        authenticationBloc.dispatch(LoggedIn(credential: credential));
         yield LoginInitial();
       } catch (error) {
         yield LoginFailure(error: error.toString());

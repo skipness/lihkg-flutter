@@ -26,7 +26,7 @@ class _LoginFormState extends State<LoginForm> {
   void initState() {
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _loginBloc = LoginBloc(
-        userRepository: _authenticationBloc.userRepository,
+        meRepository: _authenticationBloc.meRepository,
         authenticationBloc: _authenticationBloc);
     super.initState();
   }
