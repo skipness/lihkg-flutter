@@ -19,7 +19,6 @@ class WebClient extends http.BaseClient {
   @override
   Future<http.Response> get(url, {Map<String, String> headers}) async {
     final response = await super.get(url, headers: headers);
-    print(response.request.toString());
     return response.statusCode < 200 || response.statusCode > 400
         ? throw http.ClientException(
             _getExcetionMessage(response), response.request.url)
@@ -40,14 +39,14 @@ class WebClient extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
     if (userId == null || token == null) return _httpClient.send(request);
+    final String time = "${DateTime.now().millisecondsSinceEpoch}";
     final String digest = sha1
         .convert(utf8.encode(
-            'jeams\$${request.method}\$${request.url}\$\$$token\$${DateTime.now().millisecondsSinceEpoch}'))
+            "jeams\$${request.method.toLowerCase()}\$${request.url}\$\$$token\$$time"))
         .toString();
     request.headers["x-li-user"] = userId;
     request.headers["x-li-digest"] = digest;
-    request.headers["x-li-request-time"] =
-        "${DateTime.now().millisecondsSinceEpoch}";
+    request.headers["x-li-request-time"] = time;
     return _httpClient.send(request);
   }
 }
