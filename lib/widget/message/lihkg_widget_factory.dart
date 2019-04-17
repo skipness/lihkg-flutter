@@ -121,7 +121,7 @@ class LihkgWidgetFactory extends WidgetFactory {
                           Youtube(youtubeId: isYoutube.firstMatch(url).group(1))
                         ] +
                         widgets;
-                  } 
+                  }
                   // else if (isTwitter.hasMatch(url)) {
                   //   return <Widget>[
                   //         Twitter(url: isTwitter.firstMatch(url).group(1))
@@ -187,6 +187,21 @@ class LihkgWidgetFactory extends WidgetFactory {
         break;
       case 'del':
         meta = lazySet(meta, decorationLineThrough: true);
+        break;
+      case 'sub':
+        meta = lazySet(meta, buildOp: BuildOp(onWidgets: (widgets) {
+          return <Widget>[
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).hintColor),
+                  borderRadius: BorderRadius.circular(5.0)),
+              child: Column(
+                children: widgets,
+              ),
+            )
+          ];
+        }));
         break;
     }
     return meta;
