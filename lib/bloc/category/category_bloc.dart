@@ -1,16 +1,18 @@
 import 'dart:async';
-import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
-import 'package:lihkg_flutter/bloc/bloc.dart';
-import 'package:lihkg_flutter/networking/api_client.dart';
-import 'package:lihkg_flutter/model/model.dart';
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:lihkg_flutter/bloc/bloc.dart';
+import 'package:lihkg_flutter/model/model.dart';
+import 'package:lihkg_flutter/repository/repository.dart';
 
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
-  SubCategory subCategory;
+  final CategoryRepository categoryRepository;
+  final AuthenticationBloc authenticationBloc;
   int page = 1;
 
-  CategoryBloc({@required this.subCategory}) {
+  CategoryBloc(
+      {@required this.categoryRepository, @required this.authenticationBloc}) {
     dispatch(FetchCategory());
   }
 
@@ -29,14 +31,15 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     if (event is FetchCategory && !_hasReachedEnd(currentState)) {
       try {
         if (currentState is CategoryUninitialized) {
-          final posts = await _fetchCategory(page);
-          print(posts.first.toString());
+          final posts =
+              await categoryRepository.fetchCategory(page, authenticationBloc);
           yield CategoryLoaded(items: posts, hasReachedEnd: false);
         }
 
         if (currentState is CategoryLoaded) {
           page = page + 1;
-          final posts = await _fetchCategory(page);
+          final posts =
+              await categoryRepository.fetchCategory(page, authenticationBloc);
           if (posts.isEmpty) {
             currentState.copyWith(hasReachedEnd: true);
           } else {
@@ -46,15 +49,16 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             yield CategoryLoaded(items: newList, hasReachedEnd: false);
           }
         }
-      } catch (_) {
-        yield CategoryError();
+      } catch (error) {
+        yield CategoryError(error: error.toString());
       }
     }
 
     if (event is RefreshCategory) {
       try {
         page = 1;
-        final posts = await _fetchCategory(page);
+        final posts =
+            await categoryRepository.fetchCategory(page, authenticationBloc);
         yield CategoryLoaded(items: posts, hasReachedEnd: false);
       } catch (_) {
         yield currentState;
@@ -64,20 +68,4 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
 
   bool _hasReachedEnd(CategoryState state) =>
       state is CategoryLoaded && state.hasReachedEnd;
-
-  Future<List<Item>> _fetchCategory(int page) async {
-    try {
-      final url = this.subCategory.url;
-      final query = this.subCategory.query.toJson();
-      final result = await ApiClient()
-          .fetchCategory(url, this.subCategory.catId, page, query: query);
-      if (result.errorCode == 100) {
-        return [];
-      } else {
-        return result.response.items;
-      }
-    } catch (error) {
-      throw Exception(error.toString());
-    }
-  }
 }

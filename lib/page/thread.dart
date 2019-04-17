@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lihkg_flutter/bloc/bloc.dart';
 import 'package:lihkg_flutter/model/model.dart';
+import 'package:lihkg_flutter/repository/repository.dart';
 import 'package:lihkg_flutter/widget/common/common_widget.dart';
 import 'package:lihkg_flutter/widget/thread_cell/thread_cell.dart';
 import 'package:lihkg_flutter/widget/thread/thread_bottom_app_bar.dart';
@@ -27,7 +28,9 @@ class _ThreadPageState extends State<ThreadPage> {
   @override
   void initState() {
     _preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
-    _threadBloc = ThreadBloc(threadId: widget.thread.threadId);
+    _threadBloc = ThreadBloc(
+        threadRepository: ThreadRepository(threadId: widget.thread.threadId),
+        authenticationBloc: BlocProvider.of<AuthenticationBloc>(context));
     // _refreshCompleter = Completer<void>();
     super.initState();
   }

@@ -10,9 +10,8 @@ import 'package:lihkg_flutter/repository/repository.dart';
 void main() async {
   BlocSupervisor().delegate = SimpleBlocDelegate();
   runApp(BlocProviderTree(blocProviders: [
-    BlocProvider<AppBloc>(bloc: AppBloc()),
     BlocProvider<AuthenticationBloc>(
-        bloc: AuthenticationBloc(userRepository: MeRepository())),
+        bloc: AuthenticationBloc(meRepository: MeRepository())),
     BlocProvider<PreferenceBloc>(
         bloc: PreferenceBloc(
             sharedPreferences: await SharedPreferences.getInstance(),
@@ -37,11 +36,13 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
-    _appBloc = BlocProvider.of<AppBloc>(context);
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
     _authenticationBloc.dispatch(AppStarted());
     _preferenceBloc.dispatch(GetPreference());
+    _appBloc = AppBloc(
+        appRepository: AppRepository(),
+        authenticationBloc: _authenticationBloc);
     super.initState();
   }
 
@@ -80,7 +81,10 @@ class _AppState extends State<App> {
                   }
 
                   if (state is AppError) {
-                    return Center(child: Text('Error'));
+                    final theme = Theme.of(context);
+                    return Container(
+                        color: theme.backgroundColor,
+                        child: Center(child: Text('${state.error}')));
                   }
 
                   if (state is AppLoaded) {

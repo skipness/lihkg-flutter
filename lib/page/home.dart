@@ -4,6 +4,7 @@ import 'package:lihkg_flutter/model/model.dart';
 import 'package:lihkg_flutter/page/category.dart';
 import 'package:lihkg_flutter/page/category_list.dart';
 import 'package:lihkg_flutter/bloc/bloc.dart';
+import 'package:lihkg_flutter/repository/repository.dart';
 
 class Home extends StatefulWidget {
   final List<CatList> catList;
@@ -27,9 +28,10 @@ class _HomeState extends State<Home> {
       .map((SubCategory subCategory) => Tab(text: subCategory.name))
       .toList();
 
-  _createBloc() =>
-      getCategory().subCategory.forEach((SubCategory subCategory) =>
-          _categoryBlocList.add(CategoryBloc(subCategory: subCategory)));
+  _createBloc() => getCategory().subCategory.forEach(
+      (SubCategory subCategory) => _categoryBlocList.add(CategoryBloc(
+          categoryRepository: CategoryRepository(subCategory: subCategory),
+          authenticationBloc: BlocProvider.of<AuthenticationBloc>(context))));
 
   @override
   void initState() {

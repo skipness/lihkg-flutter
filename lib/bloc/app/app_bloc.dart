@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:lihkg_flutter/bloc/bloc.dart';
-import 'package:lihkg_flutter/networking/api_client.dart';
-import 'package:lihkg_flutter/model/model.dart';
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:lihkg_flutter/bloc/bloc.dart';
+import 'package:lihkg_flutter/repository/repository.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
-  AppBloc() {
+  final AppRepository appRepository;
+  final AuthenticationBloc authenticationBloc;
+
+  AppBloc({@required this.appRepository, @required this.authenticationBloc})
+      : assert(appRepository != null) {
     dispatch(FetchSysProps());
   }
 
@@ -25,24 +29,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     if (event is FetchSysProps) {
       try {
         if (currentState is AppUninitialized) {
-          final sysProps = await _fetchSystemProps();
+          final sysProps =
+              await appRepository.fetchSystemProps(authenticationBloc);
           yield AppLoaded(systemProps: sysProps);
         }
         // if (currentState is AppLoaded) {
         //   final posts = await _fetchCategory(page);
 
         // }
-      } catch (_) {
-        yield AppError();
+      } catch (error) {
+        yield AppError(error: error.toString());
       }
-    }
-  }
-
-  Future<SysProps> _fetchSystemProps() async {
-    try {
-      return await ApiClient().fetchSysProps();
-    } catch (error) {
-      throw Exception(error.toString());
     }
   }
 }

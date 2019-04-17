@@ -6,10 +6,13 @@ import 'package:lihkg_flutter/bloc/bloc.dart';
 import 'package:lihkg_flutter/repository/repository.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+  final AuthenticationBloc authenticationBloc;
   final ProfileRepository profileRepository;
-  final String userId;
 
-  ProfileBloc({@required this.profileRepository, @required this.userId}) {
+  ProfileBloc({
+    @required this.authenticationBloc,
+    @required this.profileRepository,
+  }) {
     dispatch(FetchProfile());
   }
 
@@ -28,11 +31,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if (event is FetchProfile) {
       try {
         if (currentState is ProfileUninitialized) {
-          final profile = await profileRepository.fetchProfile(userId);
+          final profile =
+              await profileRepository.fetchProfile(authenticationBloc);
           yield ProfileLoaded(profile: profile);
         }
       } catch (error) {
-        yield ProfileError(error: error);
+        yield ProfileError(error: error.toString());
       }
     }
   }

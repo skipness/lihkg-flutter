@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lihkg_flutter/bloc/bloc.dart';
 import 'package:lihkg_flutter/model/model.dart';
+import 'package:lihkg_flutter/repository/repository.dart';
 import 'package:lihkg_flutter/widget/media/media_cell.dart';
 import 'package:lihkg_flutter/widget/media/empty_view.dart';
 import 'package:lihkg_flutter/page/page.dart';
@@ -21,7 +22,10 @@ class _MediaListState extends State<MediaList> {
 
   @override
   void initState() {
-    _mediaBloc = MediaBloc(threadId: widget.threadId, includeLink: widget.includeLink);
+    _mediaBloc = MediaBloc(
+        mediaRepository: MediaRepository(
+            threadId: widget.threadId, includeLink: widget.includeLink),
+        authenticationBloc: BlocProvider.of<AuthenticationBloc>(context));
     super.initState();
   }
 

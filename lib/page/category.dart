@@ -32,7 +32,7 @@ class _CategoryPageState extends State<CategoryPage> {
     return ThreadListCell(
         key: ValueKey(thread.threadId),
         thread: thread,
-        currentCatId: _categoryBloc.subCategory.catId);
+        currentCatId: _categoryBloc.categoryRepository.subCategory.catId);
   }
 
   Widget listFooter(bool hasReachedEnd) {

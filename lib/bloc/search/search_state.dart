@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lihkg_flutter/model/model.dart';
 
@@ -16,8 +17,12 @@ class Searching extends SearchState {
 }
 
 class SearchError extends SearchState {
+  final String error;
+
+  SearchError({@required this.error});
+
   @override
-  String toString() => 'Search Error';
+  String toString() => 'Search Error { error: $error }';
 }
 
 class SearchSuccess extends SearchState {

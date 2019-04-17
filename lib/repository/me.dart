@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:lihkg_flutter/model/model.dart';
 import 'package:lihkg_flutter/networking/api_client.dart';
 
 class MeRepository {

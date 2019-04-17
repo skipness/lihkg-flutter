@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lihkg_flutter/model/model.dart';
 
@@ -11,8 +12,12 @@ class ThreadUninitialized extends ThreadState {
 }
 
 class ThreadError extends ThreadState {
+  final String error;
+
+  ThreadError({@required this.error});
+
   @override
-  String toString() => 'Thread Error';
+  String toString() => 'Thread Error { error: $error}';
 }
 
 class ThreadLoaded extends ThreadState {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lihkg_flutter/model/model.dart';
-import 'package:lihkg_flutter/page/login.dart';
-import 'package:lihkg_flutter/page/search.dart';
-import 'package:lihkg_flutter/page/setting.dart';
+import 'package:lihkg_flutter/page/page.dart';
+import 'package:lihkg_flutter/widget/category/category.dart';
 
 typedef void ChangeCategoryCallback(String catId);
 
@@ -64,15 +63,22 @@ class _CategoryListPageState extends State<CategoryListPage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    // ListTile(
-                    //     leading: Icon(Icons.person_outline,
-                    //         color: theme.iconTheme.color),
-                    //     title: Text('帳號', style: theme.textTheme.subhead),
-                    //     onTap: () {
-                    //       Navigator.of(context).push(MaterialPageRoute(
-                    //           fullscreenDialog: true,
-                    //           builder: (BuildContext context) => LoginPage()));
-                    //     }),
+                    AuthListTile(
+                        leading: Icon(Icons.person_outline,
+                            color: theme.iconTheme.color),
+                        title: Text('帳號', style: theme.textTheme.subhead),
+                        authenticated: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  ProfilePage()));
+                        },
+                        unauthenticated: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (BuildContext context) => LoginPage()));
+                        }),
                     ListTile(
                         leading:
                             Icon(Icons.search, color: theme.iconTheme.color),

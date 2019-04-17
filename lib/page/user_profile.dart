@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share/share.dart';
 import 'package:lihkg_flutter/bloc/bloc.dart';
 import 'package:lihkg_flutter/model/model.dart';
+import 'package:lihkg_flutter/repository/repository.dart';
 import 'package:lihkg_flutter/widget/common/common_widget.dart';
 import 'package:lihkg_flutter/widget/category/category_cell/thread_list_cell.dart';
 import 'package:lihkg_flutter/widget/shimmer/shimmer.dart';
@@ -25,8 +26,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   void initState() {
     _userProfileBlocList = [
-      UserProfileBloc(userId: widget.user.userId, query: 'create_time'),
-      UserProfileBloc(userId: widget.user.userId, query: 'reply_time')
+      UserProfileBloc(
+          userProfileRepository: UserProfileRepository(
+              userId: widget.user.userId, sortBy: 'create_time'),
+          authenticationBloc: BlocProvider.of<AuthenticationBloc>(context)),
+      UserProfileBloc(
+          userProfileRepository: UserProfileRepository(
+              userId: widget.user.userId, sortBy: 'reply_time'),
+          authenticationBloc: BlocProvider.of<AuthenticationBloc>(context))
     ];
     _preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
     _refreshCompleter = Completer<void>();

@@ -37,7 +37,7 @@ class _ThreadBottomAppBarState extends State<ThreadBottomAppBar> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => MediaList(
-                              threadId: _threadBloc.threadId,
+                              threadId: _threadBloc.threadRepository.threadId,
                               includeLink: (state is PreferenceLoaded
                                   ? state.preferences[MEDIA_MODE_INCLUDE_LINK]
                                       .value

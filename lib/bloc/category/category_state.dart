@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lihkg_flutter/model/model.dart';
 
@@ -11,8 +12,12 @@ class CategoryUninitialized extends CategoryState {
 }
 
 class CategoryError extends CategoryState {
+  final String error;
+
+  CategoryError({@required this.error});
+
   @override
-  String toString() => 'Category Error';
+  String toString() => 'Category Error { error: $error }';
 }
 
 class CategoryLoaded extends CategoryState {

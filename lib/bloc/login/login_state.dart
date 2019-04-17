@@ -7,12 +7,12 @@ abstract class LoginState extends Equatable {
 
 class LoginInitial extends LoginState {
   @override
-  String toString() => 'LoginInitial';
+  String toString() => 'Login Initial';
 }
 
 class LoginLoading extends LoginState {
   @override
-  String toString() => 'LoginLoading';
+  String toString() => 'Login Loading';
 }
 
 class LoginFailure extends LoginState {
@@ -21,5 +21,5 @@ class LoginFailure extends LoginState {
   LoginFailure({@required this.error}) : super([error]);
 
   @override
-  String toString() => 'LoginFailure { error: $error }';
+  String toString() => 'Login Failure { error: $error }';
 }

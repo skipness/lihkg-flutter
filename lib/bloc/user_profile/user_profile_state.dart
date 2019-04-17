@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lihkg_flutter/model/model.dart';
 
@@ -11,8 +12,12 @@ class UserProfileUninitialized extends UserProfileState {
 }
 
 class UserProfileError extends UserProfileState {
+  final String error;
+
+  UserProfileError({@required this.error});
+
   @override
-  String toString() => 'User Profile Error';
+  String toString() => 'User Profile Error { error: $error }';
 }
 
 class UserProfileLoaded extends UserProfileState {

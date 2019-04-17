@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lihkg_flutter/model/model.dart';
 
@@ -11,8 +12,12 @@ class MediaUninitialized extends MediaState {
 }
 
 class MediaError extends MediaState {
+  final String error;
+
+  MediaError({@required this.error});
+
   @override
-  String toString() => 'Media Error';
+  String toString() => 'Media Error { error: $error }';
 }
 
 class MediaLoaded extends MediaState {

@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
-import 'package:lihkg_flutter/bloc/bloc.dart';
-import 'package:lihkg_flutter/networking/api_client.dart';
-import 'package:lihkg_flutter/model/model.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:lihkg_flutter/bloc/bloc.dart';
+import 'package:lihkg_flutter/repository/repository.dart';
 
 class MediaBloc extends Bloc<MediaEvent, MediaState> {
-  String threadId;
-  bool includeLink;
+  final MediaRepository mediaRepository;
+  final AuthenticationBloc authenticationBloc;
 
-  MediaBloc({@required this.threadId, this.includeLink = false}) {
+  MediaBloc(
+      {@required this.mediaRepository, @required this.authenticationBloc}) {
     dispatch(FetchMedia());
   }
 
@@ -29,22 +29,12 @@ class MediaBloc extends Bloc<MediaEvent, MediaState> {
     if (event is FetchMedia) {
       try {
         if (currentState is MediaUninitialized) {
-          final items = await _fetchMedia();
+          final items = await mediaRepository.fetchMedia(authenticationBloc);
           yield MediaLoaded(items: items);
         }
-      } catch (_) {
-        yield MediaError();
+      } catch (error) {
+        yield MediaError(error: error.toString());
       }
-    }
-  }
-
-  Future<List<MediaContent>> _fetchMedia() async {
-    try {
-      final result = await ApiClient()
-          .fetchMedia(threadId: threadId, includeLink: includeLink);
-      return result.response.mediaContents;
-    } catch (error) {
-      throw Exception(error.toString());
     }
   }
 }

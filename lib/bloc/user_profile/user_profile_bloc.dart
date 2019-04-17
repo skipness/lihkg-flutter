@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
-import 'package:lihkg_flutter/bloc/bloc.dart';
-import 'package:lihkg_flutter/networking/api_client.dart';
-import 'package:lihkg_flutter/model/model.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:lihkg_flutter/bloc/bloc.dart';
+import 'package:lihkg_flutter/repository/repository.dart';
 
 class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
-  String userId;
-  String query;
+  UserProfileRepository userProfileRepository;
+  AuthenticationBloc authenticationBloc;
   int page;
 
   UserProfileBloc(
-      {@required this.userId, @required this.query, this.page = 1}) {
+      {@required this.userProfileRepository,
+      @required this.authenticationBloc,
+      this.page = 1}) {
     dispatch(FetchUserProfile(page: page));
   }
 
@@ -31,28 +32,31 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     if (event is FetchUserProfile && !_hasReachedEnd(currentState)) {
       try {
         if (currentState is UserProfileUninitialized) {
-          final items = await _fetchUserProfile(page);
+          final items = await userProfileRepository.fetchUserProfile(
+              page, authenticationBloc);
           yield UserProfileLoaded(
               items: items, hasReachedEnd: items.isEmpty ? true : false);
         }
 
         if (currentState is UserProfileLoaded) {
           page = page + 1;
-          final items = await _fetchUserProfile(page);
+          final items = await userProfileRepository.fetchUserProfile(
+              page, authenticationBloc);
           yield items.isEmpty
               ? currentState.copyWith(hasReachedEnd: true)
               : UserProfileLoaded(
                   items: currentState.items + items, hasReachedEnd: false);
         }
-      } catch (_) {
-        yield UserProfileError();
+      } catch (error) {
+        yield UserProfileError(error: error.toString());
       }
     }
 
     if (event is RefreshUserProfile) {
       try {
         page = 1;
-        final items = await _fetchUserProfile(page);
+        final items = await userProfileRepository.fetchUserProfile(
+            page, authenticationBloc);
         yield UserProfileLoaded(items: items, hasReachedEnd: false);
       } catch (_) {
         yield currentState;
@@ -62,14 +66,4 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
   bool _hasReachedEnd(UserProfileState state) =>
       state is UserProfileLoaded && state.hasReachedEnd;
-
-  Future<List<Item>> _fetchUserProfile(int page) async {
-    final result = await ApiClient()
-        .fetchUserProfile(userId: userId, page: page, query: query);
-    if (result.errorCode == 100) {
-      return [];
-    } else {
-      return result.response.items;
-    }
-  }
 }

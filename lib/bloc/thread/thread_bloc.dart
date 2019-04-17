@@ -1,17 +1,21 @@
 import 'dart:async';
-import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
-import 'package:lihkg_flutter/bloc/bloc.dart';
-import 'package:lihkg_flutter/networking/api_client.dart';
-import 'package:lihkg_flutter/model/model.dart';
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:lihkg_flutter/bloc/bloc.dart';
+import 'package:lihkg_flutter/model/model.dart';
+import 'package:lihkg_flutter/repository/repository.dart';
 
 class ThreadBloc extends Bloc<ThreadEvent, ThreadState> {
-  String threadId;
+  ThreadRepository threadRepository;
+  AuthenticationBloc authenticationBloc;
   ThreadResponse _thread;
   int page;
 
-  ThreadBloc({@required this.threadId, this.page = 1}) {
+  ThreadBloc(
+      {@required this.threadRepository,
+      @required this.authenticationBloc,
+      this.page = 1}) {
     dispatch(FetchThread(page: page));
   }
 
@@ -32,38 +36,36 @@ class ThreadBloc extends Bloc<ThreadEvent, ThreadState> {
       page = event.page;
       try {
         if (currentState is ThreadUninitialized) {
-          final ThreadResponse thread = await _fetchThread(page);
-          final List<ThreadItem> items = thread.itemData
-            ..removeWhere((ThreadItem item) => item.status != "1");
+          final ThreadResponse thread =
+              await threadRepository.fetchThread(page, authenticationBloc);
           this.thread = thread;
           yield ThreadLoaded(
               thread: thread,
-              items: items,
-              hasReachedEnd:
-                  (items.isEmpty || items.last.msgNum == thread.noOfReply) ||
-                          (items.last.msgNum == thread.maxReply)
-                      ? true
-                      : false);
+              items: thread.itemData,
+              hasReachedEnd: (thread.itemData.isEmpty ||
+                          thread.itemData.last.msgNum == thread.noOfReply) ||
+                      (thread.itemData.last.msgNum == thread.maxReply)
+                  ? true
+                  : false);
         }
 
         if (currentState is ThreadLoaded && !_hasReachedEnd(currentState)) {
-          final ThreadResponse thread = await _fetchThread(page);
-          final List<ThreadItem> items = thread.itemData
-            ..removeWhere((ThreadItem item) => item.status != "1");
+          final ThreadResponse thread =
+              await threadRepository.fetchThread(page, authenticationBloc);
           this.thread = thread;
           yield ThreadLoaded(
               thread: thread,
               items: isNext
-                  ? currentState.items + items
-                  : items + currentState.items,
-              hasReachedEnd:
-                  (items.isEmpty || items.last.msgNum == thread.noOfReply) ||
-                          (items.last.msgNum == thread.maxReply)
-                      ? true
-                      : false);
+                  ? currentState.items + thread.itemData
+                  : thread.itemData + currentState.items,
+              hasReachedEnd: (thread.itemData.isEmpty ||
+                          thread.itemData.last.msgNum == thread.noOfReply) ||
+                      (thread.itemData.last.msgNum == thread.maxReply)
+                  ? true
+                  : false);
         }
-      } catch (_) {
-        yield ThreadError();
+      } catch (error) {
+        yield ThreadError(error: error.toString());
       }
     }
 
@@ -71,19 +73,19 @@ class ThreadBloc extends Bloc<ThreadEvent, ThreadState> {
       page = event.page;
       try {
         yield ThreadUninitialized();
-        final thread = await _fetchThread(page);
-        final items = thread.itemData;
+        final thread =
+            await threadRepository.fetchThread(page, authenticationBloc);
         this.thread = thread;
         yield ThreadLoaded(
             thread: thread,
-            items: items,
-            hasReachedEnd:
-                (items.isEmpty || items.last.msgNum == thread.noOfReply) ||
-                        (items.last.msgNum == thread.maxReply)
-                    ? true
-                    : false);
-      } catch (_) {
-        yield ThreadError();
+            items: thread.itemData,
+            hasReachedEnd: (thread.itemData.isEmpty ||
+                        thread.itemData.last.msgNum == thread.noOfReply) ||
+                    (thread.itemData.last.msgNum == thread.maxReply)
+                ? true
+                : false);
+      } catch (error) {
+        yield ThreadError(error: error.toString());
       }
     }
   }
@@ -93,14 +95,4 @@ class ThreadBloc extends Bloc<ThreadEvent, ThreadState> {
 
   ThreadResponse get thread => this._thread;
   set thread(ThreadResponse thread) => _thread = thread;
-
-  Future<ThreadResponse> _fetchThread(int page) async {
-    try {
-      final result =
-          await ApiClient().fetchThread(threadId: threadId, page: page);
-      return result.response;
-    } catch (error) {
-      throw Exception(error.toString());
-    }
-  }
 }
