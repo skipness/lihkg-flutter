@@ -78,6 +78,7 @@ class ThreadResponse {
   User user;
   String page;
   List<ThreadItem> itemData;
+  Me me;
 
   ThreadResponse({
     this.threadId,
@@ -110,6 +111,7 @@ class ThreadResponse {
     this.user,
     this.page,
     this.itemData,
+    this.me,
   });
 
   factory ThreadResponse.fromJson(Map<String, dynamic> json) =>
@@ -145,6 +147,7 @@ class ThreadResponse {
         page: json["page"],
         itemData: new List<ThreadItem>.from(
             json["item_data"].map((x) => ThreadItem.fromJson(x))),
+        me: json["me"] == null ? null : Me.fromJson(json["me"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -178,6 +181,7 @@ class ThreadResponse {
         "user": user.toJson(),
         "page": page,
         "item_data": new List<dynamic>.from(itemData.map((x) => x.toJson())),
+        "me": me.toJson(),
       };
 }
 

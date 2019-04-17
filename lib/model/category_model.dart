@@ -51,11 +51,13 @@ class CategoryResponse {
   CategoryProps category;
   bool isPagination;
   List<Item> items;
+  Me me;
 
   CategoryResponse({
     this.category,
     this.isPagination,
     this.items,
+    this.me,
   });
 
   factory CategoryResponse.fromJson(Map<String, dynamic> json) =>
@@ -63,12 +65,14 @@ class CategoryResponse {
         category: CategoryProps.fromJson(json["category"]),
         isPagination: json["is_pagination"],
         items: new List<Item>.from(json["items"].map((x) => Item.fromJson(x))),
+        me: json["me"] == null ? null : Me.fromJson(json["me"]),
       );
 
   Map<String, dynamic> toJson() => {
         "category": category.toJson(),
         "is_pagination": isPagination,
         "items": new List<dynamic>.from(items.map((x) => x.toJson())),
+        "me": me.toJson(),
       };
 }
 

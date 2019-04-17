@@ -15,23 +15,34 @@ String sysPropsToJson(SysProps data) {
 class SysProps {
   int success;
   int serverTime;
+  int errorCode;
+  String errorMessage;
   SysPropsResponse sysPropsResponse;
 
   SysProps({
     this.success,
     this.serverTime,
+    this.errorCode,
+    this.errorMessage,
     this.sysPropsResponse,
   });
 
   factory SysProps.fromJson(Map<String, dynamic> json) => SysProps(
         success: json["success"],
         serverTime: json["server_time"],
-        sysPropsResponse: SysPropsResponse.fromJson(json["response"]),
+        errorCode: json["error_code"] == null ? null : json["error_code"],
+        errorMessage:
+            json["error_message"] == null ? null : json["error_message"],
+        sysPropsResponse: json["response"] == null
+            ? null
+            : SysPropsResponse.fromJson(json["response"]),
       );
 
   Map<String, dynamic> toJson() => {
         "success": success,
         "server_time": serverTime,
+        "error_code": errorCode,
+        "error_message": errorMessage,
         "SysPropsResponse": sysPropsResponse.toJson(),
       };
 }
@@ -40,11 +51,13 @@ class SysPropsResponse {
   bool lihkg;
   List<CatList> categoryList;
   List<FixedCategoryList> fixedCategoryList;
+  Me me;
 
   SysPropsResponse({
     this.lihkg,
     this.categoryList,
     this.fixedCategoryList,
+    this.me,
   });
 
   factory SysPropsResponse.fromJson(Map<String, dynamic> json) =>
@@ -55,6 +68,7 @@ class SysPropsResponse {
         fixedCategoryList: List<FixedCategoryList>.from(
             json["fixed_category_list"]
                 .map((x) => FixedCategoryList.fromJson(x))),
+        me: json["me"] == null ? null : Me.fromJson(json["me"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -63,6 +77,7 @@ class SysPropsResponse {
             List<dynamic>.from(categoryList.map((x) => x.toJson())),
         "fixed_category_list":
             List<dynamic>.from(fixedCategoryList.map((x) => x.toJson())),
+        "me": me.toJson(),
       };
 }
 

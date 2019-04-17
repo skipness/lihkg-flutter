@@ -49,20 +49,24 @@ class UserProfile {
 class UserProfileResponse {
   bool isPagination;
   List<Item> items;
+  Me me;
 
   UserProfileResponse({
     this.isPagination,
     this.items,
+    this.me,
   });
 
   factory UserProfileResponse.fromJson(Map<String, dynamic> json) =>
       new UserProfileResponse(
         isPagination: json["is_pagination"],
         items: new List<Item>.from(json["items"].map((x) => Item.fromJson(x))),
+        me: json["me"] == null ? null : Me.fromJson(json["me"]),
       );
 
   Map<String, dynamic> toJson() => {
         "is_pagination": isPagination,
         "items": new List<dynamic>.from(items.map((x) => x.toJson())),
+        "me": me.toJson(),
       };
 }

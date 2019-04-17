@@ -32,7 +32,9 @@ class Profile {
         errorCode: json["error_code"] == null ? null : json["error_code"],
         errorMessage:
             json["error_message"] == null ? null : json["error_message"],
-        response: ProfileResponse.fromJson(json["response"]),
+        response: json["response"] == null
+            ? null
+            : ProfileResponse.fromJson(json["response"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -56,7 +58,7 @@ class ProfileResponse {
   factory ProfileResponse.fromJson(Map<String, dynamic> json) =>
       ProfileResponse(
         user: User.fromJson(json["user"]),
-        me: Me.fromJson(json["me"]),
+        me: json["me"] == null ? null : Me.fromJson(json["me"]),
       );
 
   Map<String, dynamic> toJson() => {

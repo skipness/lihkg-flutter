@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:lihkg_flutter/model/model.dart';
 import 'package:lihkg_flutter/util/enum_values.dart';
 
 Media mediaFromJson(String str) {
@@ -14,18 +15,24 @@ String mediaToJson(Media data) {
 class Media {
   int success;
   int serverTime;
+  int errorCode;
+  String errorMessage;
   MediaResponse response;
 
   Media({
     this.success,
     this.serverTime,
+    this.errorCode,
+    this.errorMessage,
     this.response,
   });
 
   factory Media.fromJson(Map<String, dynamic> json) => new Media(
         success: json["success"],
         serverTime: json["server_time"],
-        response: MediaResponse.fromJson(json["response"]),
+        response: json["response"] == null
+            ? null
+            : MediaResponse.fromJson(json["response"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -39,24 +46,29 @@ class MediaResponse {
   String threadId;
   String title;
   List<MediaContent> mediaContents;
+  Me me;
 
   MediaResponse({
     this.threadId,
     this.title,
     this.mediaContents,
+    this.me,
   });
 
-  factory MediaResponse.fromJson(Map<String, dynamic> json) => new MediaResponse(
+  factory MediaResponse.fromJson(Map<String, dynamic> json) =>
+      new MediaResponse(
         threadId: json["thread_id"],
         title: json["title"],
         mediaContents: new List<MediaContent>.from(
             json["images"].map((x) => MediaContent.fromJson(x))),
+        me: json["me"] == null ? null : Me.fromJson(json["me"]),
       );
 
   Map<String, dynamic> toJson() => {
         "thread_id": threadId,
         "title": title,
         "images": new List<dynamic>.from(mediaContents.map((x) => x.toJson())),
+        "me": me.toJson(),
       };
 }
 
