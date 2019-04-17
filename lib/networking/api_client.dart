@@ -29,8 +29,8 @@ class ApiClient {
         queryString += '&$key=$value';
       }
     });
-    final response = await _webClient
-        .get('$url?cat_id=$catId&page=$page&count=$count&$queryString');
+    final response =
+        await _webClient.get('$url?page=$page&count=$count$queryString');
     return Category.fromJson(json.decode(response.body));
   }
 
@@ -49,10 +49,10 @@ class ApiClient {
   Future<UserProfile> fetchUserProfile({
     String userId,
     int page,
-    String query,
+    String sortBy,
   }) async {
     final response = await _webClient
-        .get('$_baseUrl/user/$userId/thread?page=$page&sort=$query');
+        .get('$_baseUrl/user/$userId/thread?page=$page&sort=$sortBy');
     return UserProfile.fromJson(json.decode(response.body));
   }
 
@@ -64,13 +64,13 @@ class ApiClient {
     return UserProfile.fromJson(json.decode(response.body));
   }
 
-  // Future<Login> login(String email, String password) async {
-  //   final Map<String, String> body = {'email': email, 'password': password};
-  //   final response = await _webClient.post('$_baseUrl/auth/login', body);
-  //   return Login.fromJson(json.decode(response.body));
-  // }
+  Future<Login> login(String email, String password) async {
+    final Map<String, String> body = {'email': email, 'password': password};
+    final response = await _webClient.post('$_baseUrl/auth/login', body: body);
+    return Login.fromJson(json.decode(response.body));
+  }
 
-  Future<Profile> fetchProfile(String userId, String token) async {
+  Future<Profile> fetchProfile(String userId) async {
     final response = await _webClient.get('$_baseUrl/user/$userId/profile');
     return Profile.fromJson(json.decode(response.body));
   }
