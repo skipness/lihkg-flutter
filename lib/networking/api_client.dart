@@ -6,9 +6,10 @@ import 'package:lihkg_flutter/model/model.dart';
 class ApiClient {
   final String _baseUrl = 'https://lihkg.com/api_v2';
   WebClient _webClient;
+  String deviceId;
 
-  ApiClient({String userId, String token}) {
-    _webClient = WebClient(userId: userId, token: token);
+  ApiClient({String userId, String token, this.deviceId}) {
+    _webClient = WebClient(userId: userId, token: token, deviceId: deviceId);
   }
 
   Future<SysProps> fetchSysProps() async {
@@ -66,7 +67,8 @@ class ApiClient {
 
   Future<Login> login(String email, String password) async {
     final Map<String, String> body = {'email': email, 'password': password};
-    final response = await _webClient.post('$_baseUrl/auth/login', body: body);
+    final response = await _webClient.post('$_baseUrl/auth/login',
+        body: body, headers: {"x-li-device": deviceId});
     return Login.fromJson(json.decode(response.body));
   }
 

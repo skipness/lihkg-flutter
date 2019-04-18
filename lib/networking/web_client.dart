@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:meta/meta.dart';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 
 class WebClient extends http.BaseClient {
   final String userId;
   final String token;
+  final String deviceId;
   http.Client _httpClient;
 
-  WebClient({this.userId, this.token}) {
+  WebClient(
+      {@required this.userId, @required this.token, @required this.deviceId}) {
     _httpClient = http.Client();
   }
 
@@ -19,6 +22,7 @@ class WebClient extends http.BaseClient {
   @override
   Future<http.Response> get(url, {Map<String, String> headers}) async {
     final response = await super.get(url, headers: headers);
+    print(response.request.headers);
     return response.statusCode < 200 || response.statusCode > 400
         ? throw http.ClientException(
             _getExcetionMessage(response), response.request.url)
@@ -30,6 +34,7 @@ class WebClient extends http.BaseClient {
       {Map<String, String> headers, body, Encoding encoding}) async {
     final response =
         await super.post(url, body: body, headers: headers, encoding: encoding);
+    print(response.request.headers);
     return response.statusCode < 200 || response.statusCode > 400
         ? throw http.ClientException(
             _getExcetionMessage(response), response.request.url)
@@ -38,7 +43,8 @@ class WebClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
-    if (userId == null || token == null) return _httpClient.send(request);
+    if (userId == null || token == null || deviceId == null)
+      return _httpClient.send(request);
     final String time = "${DateTime.now().millisecondsSinceEpoch}";
     final String digest = sha1
         .convert(utf8.encode(
@@ -47,6 +53,7 @@ class WebClient extends http.BaseClient {
     request.headers["x-li-user"] = userId;
     request.headers["x-li-digest"] = digest;
     request.headers["x-li-request-time"] = time;
+    request.headers["x-li-device"] = deviceId;
     return _httpClient.send(request);
   }
 }
