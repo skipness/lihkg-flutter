@@ -197,6 +197,7 @@ class LihkgWidgetFactory extends WidgetFactory {
                   border: Border.all(color: Theme.of(context).hintColor),
                   borderRadius: BorderRadius.circular(5.0)),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: widgets,
               ),
             )
