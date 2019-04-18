@@ -13,7 +13,9 @@ class MediaRepository {
   Future<List<MediaContent>> fetchMedia(
       AuthenticationBloc authenticationBloc) async {
     final result = await ApiClient(
-            userId: authenticationBloc.userId, token: authenticationBloc.token)
+            userId: authenticationBloc.userId,
+            token: authenticationBloc.token,
+            deviceId: authenticationBloc.deviceId)
         .fetchMedia(threadId: threadId, includeLink: includeLink);
     return result.errorCode != null
         ? result.errorCode == 100 ? [] : throw result.errorMessage

@@ -13,7 +13,9 @@ class UserProfileRepository {
   Future<List<Item>> fetchUserProfile(
       int page, AuthenticationBloc authenticationBloc) async {
     final result = await ApiClient(
-            userId: authenticationBloc.userId, token: authenticationBloc.token)
+            userId: authenticationBloc.userId,
+            token: authenticationBloc.token,
+            deviceId: authenticationBloc.deviceId)
         .fetchUserProfile(userId: userId, page: page, sortBy: sortBy);
     return result.errorCode != null
         ? result.errorCode == 100 ? [] : throw result.errorMessage

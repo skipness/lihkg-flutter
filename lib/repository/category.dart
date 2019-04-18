@@ -12,7 +12,9 @@ class CategoryRepository {
   Future<List<Item>> fetchCategory(
       int page, AuthenticationBloc authenticationBloc) async {
     final result = await ApiClient(
-            userId: authenticationBloc.userId, token: authenticationBloc.token)
+            userId: authenticationBloc.userId,
+            token: authenticationBloc.token,
+            deviceId: authenticationBloc.deviceId)
         .fetchCategory(subCategory.url, subCategory.catId, page,
             query: subCategory.query.toJson());
     return result.errorCode != null

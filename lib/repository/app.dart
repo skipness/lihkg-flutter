@@ -7,7 +7,9 @@ class AppRepository {
   Future<SysProps> fetchSystemProps(
       AuthenticationBloc authenticationBloc) async {
     final result = await ApiClient(
-            userId: authenticationBloc.userId, token: authenticationBloc.token)
+            userId: authenticationBloc.userId,
+            token: authenticationBloc.token,
+            deviceId: authenticationBloc.deviceId)
         .fetchSysProps();
     return result.errorCode != null ? throw result.errorMessage : result;
   }

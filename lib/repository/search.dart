@@ -12,7 +12,9 @@ class SearchRepository {
   Future<List<Item>> search(
       String query, int page, AuthenticationBloc authenticationBloc) async {
     final result = await ApiClient(
-            userId: authenticationBloc.userId, token: authenticationBloc.token)
+            userId: authenticationBloc.userId,
+            token: authenticationBloc.token,
+            deviceId: authenticationBloc.deviceId)
         .search(query, page, sortBy, "1");
     return result.errorCode != null
         ? result.errorCode == 100 ? [] : throw result.errorMessage

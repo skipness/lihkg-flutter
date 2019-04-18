@@ -12,7 +12,9 @@ class ThreadRepository {
   Future<ThreadResponse> fetchThread(
       int page, AuthenticationBloc authenticationBloc) async {
     final result = await ApiClient(
-            userId: authenticationBloc.userId, token: authenticationBloc.token)
+            userId: authenticationBloc.userId,
+            token: authenticationBloc.token,
+            deviceId: authenticationBloc.deviceId)
         .fetchThread(threadId: threadId, page: page);
 
     if (result.errorCode != null) {
