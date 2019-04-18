@@ -193,6 +193,7 @@ class LihkgWidgetFactory extends WidgetFactory {
           return <Widget>[
             Container(
               padding: EdgeInsets.all(10),
+              margin: EdgeInsets.all(5),
               decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).hintColor),
                   borderRadius: BorderRadius.circular(5.0)),
