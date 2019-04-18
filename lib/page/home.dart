@@ -56,10 +56,15 @@ class _HomeState extends State<Home> {
         child: Scaffold(
             appBar: AppBar(
               title: getCategory().subCategory.length > 1
-                  ? TabBar(
-                      tabs: _buildTabs(),
-                      indicatorWeight: 3.0,
-                      isScrollable: true)
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TabBar(
+                            tabs: _buildTabs(),
+                            indicatorWeight: 3.0,
+                            isScrollable: true)
+                      ],
+                    )
                   : Text('${getCategory().subCategory[0].name}'),
               leading: Builder(
                 builder: (context) {
