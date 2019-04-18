@@ -9,6 +9,7 @@ class AuthenticationBloc
   final MeRepository meRepository;
   String userId;
   String token;
+  String deviceId;
 
   AuthenticationBloc({@required this.meRepository})
       : assert(meRepository != null);
@@ -24,9 +25,11 @@ class AuthenticationBloc
     if (event is AppStarted) {
       final bool hasToken = await meRepository.hasToken();
       final bool hasUserId = await meRepository.hasUserId();
-      if (hasToken && hasUserId) {
+      final bool hasDeviceId = await meRepository.hasDeviceId();
+      if (hasToken && hasUserId && hasDeviceId) {
         userId = await meRepository.readUserId();
         token = await meRepository.readToken();
+        deviceId = await meRepository.readDeviceId();
         yield AuthenticationAuthenticated();
       } else {
         yield AuthenticationUnauthenticated();
@@ -39,6 +42,7 @@ class AuthenticationBloc
       token = event.credential["token"];
       await meRepository.persistUserId(event.credential["userId"]);
       userId = event.credential["userId"];
+      deviceId = await meRepository.readDeviceId();
       yield AuthenticationAuthenticated();
     }
 
@@ -46,8 +50,10 @@ class AuthenticationBloc
       yield AuthenticationLoading();
       userId = null;
       token = null;
+      deviceId = null;
       await meRepository.deleteToken();
       await meRepository.deleteUserId();
+      await meRepository.deleteDeviceId();
       yield AuthenticationUnauthenticated();
     }
   }
