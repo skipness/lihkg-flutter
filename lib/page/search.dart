@@ -114,6 +114,7 @@ class _SearchPageState extends State<SearchPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+            centerTitle: true,
             title: BlocBuilder<SearchEvent, SearchState>(
               bloc: _searchBlocList[currentIndex],
               builder: (BuildContext context, SearchState state) {
@@ -140,7 +141,7 @@ class _SearchPageState extends State<SearchPage>
               },
             ),
             bottom: PreferredSize(
-              preferredSize: Size.fromHeight(32),
+              preferredSize: Size.fromHeight(35),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[

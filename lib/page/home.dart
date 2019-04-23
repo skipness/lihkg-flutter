@@ -55,6 +55,7 @@ class _HomeState extends State<Home> {
         length: getCategory().subCategory.length,
         child: Scaffold(
             appBar: AppBar(
+              centerTitle: true,
               title: getCategory().subCategory.length > 1
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.end,

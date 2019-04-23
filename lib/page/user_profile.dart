@@ -111,6 +111,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                             '${widget.user.nickname} #${widget.user.userId}\nhttps://lihkg.com/profile/${widget.user.userId}');
                       })
                 ],
+                centerTitle: true,
                 title: Column(
                   children: <Widget>[
                     Expanded(
@@ -122,10 +123,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 .copyWith(color: theme.hintColor)))
                   ],
                 ),
-                centerTitle:
-                    theme.platform == TargetPlatform.iOS ? true : false,
                 bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(32),
+                  preferredSize: Size.fromHeight(35),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
