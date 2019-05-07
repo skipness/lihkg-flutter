@@ -25,8 +25,7 @@ class PreferenceBloc extends Bloc<PreferenceEvent, PreferenceState> {
   PreferenceState get initialState => PreferenceLoading();
 
   @override
-  Stream<PreferenceState> mapEventToState(
-      PreferenceState currentState, PreferenceEvent event) async* {
+  Stream<PreferenceState> mapEventToState(PreferenceEvent event) async* {
     if (event is GetPreference) {
       try {
         if (event is GetPreference) {

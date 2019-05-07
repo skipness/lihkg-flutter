@@ -20,14 +20,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileState get initialState => ProfileUninitialized();
 
   @override
-  Stream<ProfileEvent> transform(Stream<ProfileEvent> events) {
-    return (events as Observable<ProfileEvent>)
-        .debounce(Duration(milliseconds: 500));
+  Stream<ProfileState> transform(Stream<ProfileEvent> events,
+      Stream<ProfileState> Function(ProfileEvent event) next) {
+    return super.transform(
+        (events as Observable<ProfileEvent>)
+            .debounceTime(Duration(milliseconds: 500)),
+        next);
   }
 
   @override
-  Stream<ProfileState> mapEventToState(
-      ProfileState currentState, ProfileEvent event) async* {
+  Stream<ProfileState> mapEventToState(ProfileEvent event) async* {
     if (event is FetchProfile) {
       try {
         if (currentState is ProfileUninitialized) {

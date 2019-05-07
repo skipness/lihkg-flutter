@@ -21,14 +21,16 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   UserProfileState get initialState => UserProfileUninitialized();
 
   @override
-  Stream<UserProfileEvent> transform(Stream<UserProfileEvent> events) {
-    return (events as Observable<UserProfileEvent>)
-        .debounce(Duration(milliseconds: 500));
+  Stream<UserProfileState> transform(Stream<UserProfileEvent> events,
+      Stream<UserProfileState> Function(UserProfileEvent event) next) {
+    return super.transform(
+        (events as Observable<UserProfileEvent>)
+            .debounceTime(Duration(milliseconds: 500)),
+        next);
   }
 
   @override
-  Stream<UserProfileState> mapEventToState(
-      UserProfileState currentState, UserProfileEvent event) async* {
+  Stream<UserProfileState> mapEventToState(UserProfileEvent event) async* {
     if (event is FetchUserProfile && !_hasReachedEnd(currentState)) {
       try {
         if (currentState is UserProfileUninitialized) {
@@ -43,9 +45,11 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
           final items = await userProfileRepository.fetchUserProfile(
               page, authenticationBloc);
           yield items.isEmpty
-              ? currentState.copyWith(hasReachedEnd: true)
+              ? (currentState as UserProfileLoaded)
+                  .copyWith(hasReachedEnd: true)
               : UserProfileLoaded(
-                  items: currentState.items + items, hasReachedEnd: false);
+                  items: (currentState as UserProfileLoaded).items + items,
+                  hasReachedEnd: false);
         }
       } catch (error) {
         yield UserProfileError(error: error.toString());

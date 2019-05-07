@@ -18,14 +18,16 @@ class MediaBloc extends Bloc<MediaEvent, MediaState> {
   MediaState get initialState => MediaUninitialized();
 
   @override
-  Stream<MediaEvent> transform(Stream<MediaEvent> events) {
-    return (events as Observable<MediaEvent>)
-        .debounce(Duration(milliseconds: 500));
+  Stream<MediaState> transform(Stream<MediaEvent> events,
+      Stream<MediaState> Function(MediaEvent event) next) {
+    return super.transform(
+        (events as Observable<MediaEvent>)
+            .debounceTime(Duration(milliseconds: 500)),
+        next);
   }
 
   @override
-  Stream<MediaState> mapEventToState(
-      MediaState currentState, MediaEvent event) async* {
+  Stream<MediaState> mapEventToState(MediaEvent event) async* {
     if (event is FetchMedia) {
       try {
         if (currentState is MediaUninitialized) {

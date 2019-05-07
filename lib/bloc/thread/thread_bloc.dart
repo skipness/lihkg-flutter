@@ -23,14 +23,16 @@ class ThreadBloc extends Bloc<ThreadEvent, ThreadState> {
   ThreadState get initialState => ThreadUninitialized();
 
   @override
-  Stream<ThreadEvent> transform(Stream<ThreadEvent> events) {
-    return (events as Observable<ThreadEvent>)
-        .debounce(Duration(milliseconds: 500));
+  Stream<ThreadState> transform(Stream<ThreadEvent> events,
+      Stream<ThreadState> Function(ThreadEvent event) next) {
+    return super.transform(
+        (events as Observable<ThreadEvent>)
+            .debounceTime(Duration(milliseconds: 500)),
+        next);
   }
 
   @override
-  Stream<ThreadState> mapEventToState(
-      ThreadState currentState, ThreadEvent event) async* {
+  Stream<ThreadState> mapEventToState(ThreadEvent event) async* {
     if (event is FetchThread) {
       var isNext = event.page > page;
       page = event.page;
@@ -56,8 +58,8 @@ class ThreadBloc extends Bloc<ThreadEvent, ThreadState> {
           yield ThreadLoaded(
               thread: thread,
               items: isNext
-                  ? currentState.items + thread.itemData
-                  : thread.itemData + currentState.items,
+                  ? (currentState as ThreadLoaded).items + thread.itemData
+                  : thread.itemData + (currentState as ThreadLoaded).items,
               hasReachedEnd: (thread.itemData.isEmpty ||
                           thread.itemData.last.msgNum == thread.noOfReply) ||
                       (thread.itemData.last.msgNum == thread.maxReply)

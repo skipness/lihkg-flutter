@@ -18,14 +18,18 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   AppState get initialState => AppUninitialized();
 
   @override
-  Stream<AppEvent> transform(Stream<AppEvent> events) {
-    return (events as Observable<AppEvent>)
-        .debounce(Duration(milliseconds: 500));
+  Stream<AppState> transform(
+    Stream<AppEvent> events,
+    Stream<AppState> Function(AppEvent event) next,
+  ) {
+    return super.transform(
+        (events as Observable<AppEvent>)
+            .debounceTime(Duration(milliseconds: 500)),
+        next);
   }
 
   @override
-  Stream<AppState> mapEventToState(
-      AppState currentState, AppEvent event) async* {
+  Stream<AppState> mapEventToState(AppEvent event) async* {
     if (event is FetchSysProps) {
       try {
         if (currentState is AppUninitialized) {

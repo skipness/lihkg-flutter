@@ -19,14 +19,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchState get initialState => SearchEmpty();
 
   @override
-  Stream<SearchEvent> transform(Stream<SearchEvent> events) {
-    return (events as Observable<SearchEvent>)
-        .debounce(Duration(milliseconds: 500));
+  Stream<SearchState> transform(Stream<SearchEvent> events,
+      Stream<SearchState> Function(SearchEvent event) next) {
+    return super.transform(
+        (events as Observable<SearchEvent>)
+            .debounceTime(Duration(milliseconds: 500)),
+        next);
   }
 
   @override
-  Stream<SearchState> mapEventToState(
-      SearchState currentState, SearchEvent event) async* {
+  Stream<SearchState> mapEventToState(SearchEvent event) async* {
     if (event is ResetSearch) {
       try {
         page = 1;
@@ -55,9 +57,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           final items = await searchRepository.search(
               event.text, page, authenticationBloc);
           yield items.isEmpty
-              ? currentState.copyWith(hasReachedEnd: true)
+              ? (currentState as SearchSuccess).copyWith(hasReachedEnd: true)
               : SearchSuccess(
-                  items: currentState.items + items, hasReachedEnd: false);
+                  items: (currentState as SearchSuccess).items + items,
+                  hasReachedEnd: false);
         }
       } catch (error) {
         yield SearchError(error: error.toString());

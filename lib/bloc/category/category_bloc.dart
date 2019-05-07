@@ -20,14 +20,16 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   CategoryState get initialState => CategoryUninitialized();
 
   @override
-  Stream<CategoryEvent> transform(Stream<CategoryEvent> events) {
-    return (events as Observable<CategoryEvent>)
-        .debounce(Duration(milliseconds: 500));
+  Stream<CategoryState> transform(Stream<CategoryEvent> events,
+      Stream<CategoryState> Function(CategoryEvent event) next) {
+    return super.transform(
+        (events as Observable<CategoryEvent>)
+            .debounceTime(Duration(milliseconds: 500)),
+        next);
   }
 
   @override
-  Stream<CategoryState> mapEventToState(
-      CategoryState currentState, CategoryEvent event) async* {
+  Stream<CategoryState> mapEventToState(CategoryEvent event) async* {
     if (event is FetchCategory && !_hasReachedEnd(currentState)) {
       try {
         if (currentState is CategoryUninitialized) {
@@ -35,17 +37,17 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
               await categoryRepository.fetchCategory(page, authenticationBloc);
           yield CategoryLoaded(items: posts, hasReachedEnd: false);
         }
-
         if (currentState is CategoryLoaded) {
           page = page + 1;
           final posts =
               await categoryRepository.fetchCategory(page, authenticationBloc);
           if (posts.isEmpty) {
-            currentState.copyWith(hasReachedEnd: true);
+            (currentState as CategoryLoaded).copyWith(hasReachedEnd: true);
           } else {
-            final List<Item> newList = List.from(currentState.items)
-              ..addAll(posts)
-              ..toSet().toList();
+            final List<Item> newList =
+                List.from((currentState as CategoryLoaded).items)
+                  ..addAll(posts)
+                  ..toSet().toList();
             yield CategoryLoaded(items: newList, hasReachedEnd: false);
           }
         }
