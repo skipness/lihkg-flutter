@@ -1,4 +1,3 @@
-// import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,13 +22,19 @@ class _ThreadPageState extends State<ThreadPage> {
   int currentPage = 1;
   PreferenceBloc _preferenceBloc;
   ThreadBloc _threadBloc;
+  ThreadActionBloc _threadActionBloc;
+  ThreadRepository _threadRepository;
   // Completer<void> _refreshCompleter;
 
   @override
   void initState() {
     _preferenceBloc = BlocProvider.of<PreferenceBloc>(context);
+    _threadRepository = ThreadRepository(threadId: widget.thread.threadId);
     _threadBloc = ThreadBloc(
-        threadRepository: ThreadRepository(threadId: widget.thread.threadId),
+        threadRepository: _threadRepository,
+        authenticationBloc: BlocProvider.of<AuthenticationBloc>(context));
+    _threadActionBloc = ThreadActionBloc(
+        threadRepository: _threadRepository,
         authenticationBloc: BlocProvider.of<AuthenticationBloc>(context));
     // _refreshCompleter = Completer<void>();
     super.initState();
@@ -38,6 +43,7 @@ class _ThreadPageState extends State<ThreadPage> {
   @override
   void dispose() {
     _threadBloc.dispose();
+    _threadActionBloc.dispose();
     super.dispose();
   }
 
@@ -45,16 +51,18 @@ class _ThreadPageState extends State<ThreadPage> {
     final threadItem = (item as ThreadItem);
     return BlocBuilder<PreferenceEvent, PreferenceState>(
         bloc: _preferenceBloc,
-        builder:
-            (BuildContext context, PreferenceState state) =>
-                PreferenceContext(
-                    preference: (state is PreferenceLoaded
-                        ? state.preferences[THREAD_FONT_SIZE].value
-                        : 1),
-                    child: ThreadCell(
-                        key: ValueKey(threadItem.postId),
-                        thread: widget.thread,
-                        threadItem: threadItem)));
+        builder: (BuildContext context, PreferenceState state) =>
+            PreferenceContext(
+                preference: (state is PreferenceLoaded
+                    ? state.preferences[THREAD_FONT_SIZE].value
+                    : 1),
+                child: BlocProvider<ThreadActionBloc>(
+                  bloc: _threadActionBloc,
+                  child: ThreadCell(
+                      key: ValueKey(threadItem.postId),
+                      thread: widget.thread,
+                      threadItem: threadItem),
+                )));
   }
 
   Widget listFooter(bool _) {
@@ -82,7 +90,6 @@ class _ThreadPageState extends State<ThreadPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
         appBar: AppBar(
             title: AutoSizeText(
@@ -92,8 +99,31 @@ class _ThreadPageState extends State<ThreadPage> {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         )),
-        bottomNavigationBar:
-            BlocProvider(bloc: _threadBloc, child: ThreadBottomAppBar()),
+        bottomNavigationBar: BlocListener<ThreadActionEvent, ThreadActionState>(
+          bloc: _threadActionBloc,
+          listener: (BuildContext context, ThreadActionState state) {
+            if (state is ThreadActionError) {
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(state.error),
+                duration: Duration(seconds: 5),
+              ));
+            }
+
+            if (state is ThreadVoted) {
+              Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("成功評分"), duration: Duration(seconds: 5)));
+            }
+
+            if (state is ThreadReplied) {
+              Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("成功回覆"), duration: Duration(seconds: 5)));
+            }
+          },
+          child: BlocProviderTree(blocProviders: [
+            BlocProvider<ThreadBloc>(bloc: _threadBloc),
+            BlocProvider<ThreadActionBloc>(bloc: _threadActionBloc)
+          ], child: ThreadBottomAppBar()),
+        ),
         body: BlocBuilder<ThreadEvent, ThreadState>(
             bloc: _threadBloc,
             builder: (BuildContext context, ThreadState state) {

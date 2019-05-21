@@ -12,6 +12,10 @@ export 'package:lihkg_flutter/bloc/thread/thread_bloc.dart';
 export 'package:lihkg_flutter/bloc/thread/thread_event.dart';
 export 'package:lihkg_flutter/bloc/thread/thread_state.dart';
 
+export 'package:lihkg_flutter/bloc/thread/thread_action/thread_action_bloc.dart';
+export 'package:lihkg_flutter/bloc/thread/thread_action/thread_action_event.dart';
+export 'package:lihkg_flutter/bloc/thread/thread_action/thread_action_state.dart';
+
 export 'package:lihkg_flutter/bloc/user_profile/user_profile_bloc.dart';
 export 'package:lihkg_flutter/bloc/user_profile/user_profile_event.dart';
 export 'package:lihkg_flutter/bloc/user_profile/user_profile_state.dart';

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share/share.dart';
+import 'package:lihkg_flutter/bloc/bloc.dart';
+import 'package:lihkg_flutter/page/page.dart';
+import 'package:lihkg_flutter/page/user_profile.dart';
 import 'package:lihkg_flutter/model/model.dart';
 import 'package:lihkg_flutter/widget/common/common_widget.dart';
-import 'package:lihkg_flutter/page/user_profile.dart';
 
 typedef VoidCallback OnPageChange(int page);
 
@@ -34,6 +37,7 @@ class UserModalBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final _threadActionBloc = BlocProvider.of<ThreadActionBloc>(context);
     return ModalBottomSheet(
         child: SafeArea(
             bottom: false,
@@ -60,10 +64,22 @@ class UserModalBottomSheet extends StatelessWidget {
                     //     leading: Icon(Icons.import_contacts,
                     //         color: theme.iconTheme.color),
                     //     title: Text('追故模式', style: theme.textTheme.subhead)),
-                    // ListTile(
-                    //     leading:
-                    //         Icon(Icons.reply, color: theme.iconTheme.color),
-                    //     title: Text('引用回覆', style: theme.textTheme.subhead)),
+                    ListTile(
+                        leading:
+                            Icon(Icons.reply, color: theme.iconTheme.color),
+                        title: Text('引用回覆', style: theme.textTheme.subhead),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  BlocProvider<ThreadActionBloc>(
+                                    bloc: _threadActionBloc,
+                                    child: ReplyPage(
+                                      title: thread.title,
+                                      quote: reply,
+                                    ),
+                                  )));
+                        }),
                     ListTile(
                         leading:
                             Icon(Icons.share, color: theme.iconTheme.color),
