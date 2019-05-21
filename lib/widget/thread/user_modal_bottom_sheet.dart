@@ -7,12 +7,10 @@ import 'package:lihkg_flutter/page/user_profile.dart';
 typedef VoidCallback OnPageChange(int page);
 
 class UserModalBottomSheet extends StatelessWidget {
-  final User user;
   final Item thread;
   final ThreadItem reply;
 
-  UserModalBottomSheet(
-      {@required this.user, @required this.thread, @required this.reply});
+  UserModalBottomSheet({@required this.thread, @required this.reply});
 
   Widget _buildInfoRow() => Builder(builder: (BuildContext context) {
         final theme = Theme.of(context);
@@ -23,10 +21,9 @@ class UserModalBottomSheet extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   UserNickname(
-                      user: user,
-                      nickname: thread.userNickname,
+                      user: reply.user,
                       fontSize: theme.textTheme.subhead.fontSize),
-                  Text('#${user.userId}',
+                  Text('#${reply.user.userId}',
                       style: theme.textTheme.subtitle
                           .copyWith(color: theme.disabledColor))
                 ],
@@ -57,7 +54,7 @@ class UserModalBottomSheet extends StatelessWidget {
                           Navigator.of(context).pop();
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  UserProfilePage(user: user)));
+                                  UserProfilePage(user: reply.user)));
                         }),
                     // ListTile(
                     //     leading: Icon(Icons.import_contacts,
