@@ -27,9 +27,9 @@ class ThreadCell extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                ThreadInfoAction(thread: thread, threadItem: threadItem),
+                ThreadInfo(thread: thread, threadItem: threadItem),
                 ThreadMessage(threadItem: threadItem),
-                ThreadVoteBox(thread: thread, threadItem: threadItem),
+                ThreadAction(thread: thread, threadItem: threadItem),
                 const Divider(height: 0)
               ],
             ),
