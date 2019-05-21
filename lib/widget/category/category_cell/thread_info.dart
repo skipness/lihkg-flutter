@@ -18,10 +18,7 @@ class ThreadInfo extends StatelessWidget {
     return Container(
       child: Row(
         children: <Widget>[
-          UserNickname(
-              user: thread.user,
-              nickname: thread.userNickname,
-              fontSize: 13 * fontScale),
+          UserNickname(user: thread.user, fontSize: 13 * fontScale),
           const SizedBox(width: 15),
           Icon(
             Icons.comment,
