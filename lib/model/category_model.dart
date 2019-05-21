@@ -88,10 +88,12 @@ class Item extends Equatable {
   String noOfUniUserReply;
   String likeCount;
   String dislikeCount;
+  String firstPostId;
   String replyLikeCount;
   String replyDislikeCount;
   String maxReplyLikeCount;
   String maxReplyDislikeCount;
+  String mostLikePostId;
   int createTime;
   int lastReplyTime;
   String status;
@@ -104,6 +106,7 @@ class Item extends Equatable {
   CategoryProps category;
   bool isBookmarked;
   bool isReplied;
+  String lastPostId;
   User user;
   SubCategory subCategory;
 
@@ -119,10 +122,12 @@ class Item extends Equatable {
     this.noOfUniUserReply,
     this.likeCount,
     this.dislikeCount,
+    this.firstPostId,
     this.replyLikeCount,
     this.replyDislikeCount,
     this.maxReplyLikeCount,
     this.maxReplyDislikeCount,
+    this.mostLikePostId,
     this.createTime,
     this.lastReplyTime,
     this.status,
@@ -135,6 +140,7 @@ class Item extends Equatable {
     this.category,
     this.isBookmarked,
     this.isReplied,
+    this.lastPostId,
     this.user,
     this.subCategory,
   }) : super([threadId]);
@@ -149,12 +155,17 @@ class Item extends Equatable {
         userGender: genderValues.map[json["user_gender"]],
         noOfReply: json["no_of_reply"],
         noOfUniUserReply: json["no_of_uni_user_reply"],
-        likeCount: json["like_count"],
-        dislikeCount: json["dislike_count"],
+        likeCount: json["like_count"].toString(),
+        dislikeCount: json["dislike_count"].toString(),
+        firstPostId:
+            json["first_post_id"] == null ? null : json["first_post_id"],
         replyLikeCount: json["reply_like_count"],
         replyDislikeCount: json["reply_dislike_count"],
         maxReplyLikeCount: json["max_reply_like_count"],
         maxReplyDislikeCount: json["max_reply_dislike_count"],
+        mostLikePostId: json["most_like_post_id"] == null
+            ? null
+            : json["most_like_post_id"],
         createTime: json["create_time"],
         lastReplyTime: json["last_reply_time"],
         status: json["status"],
@@ -167,6 +178,7 @@ class Item extends Equatable {
         category: CategoryProps.fromJson(json["category"]),
         isBookmarked: json["is_bookmarked"],
         isReplied: json["is_replied"],
+        lastPostId: json["last_post_id"] == null ? null : json["last_post_id"],
         user: User.fromJson(json["user"]),
         subCategory: json["sub_category"] == null
             ? null
@@ -185,10 +197,13 @@ class Item extends Equatable {
         "no_of_uni_user_reply": noOfUniUserReply,
         "like_count": likeCount,
         "dislike_count": dislikeCount,
+        "first_post_id": firstPostId,
+        "last_post_id": lastPostId,
         "reply_like_count": replyLikeCount,
         "reply_dislike_count": replyDislikeCount,
         "max_reply_like_count": maxReplyLikeCount,
         "max_reply_dislike_count": maxReplyDislikeCount,
+        "most_like_post_id": mostLikePostId,
         "create_time": createTime,
         "last_reply_time": lastReplyTime,
         "status": status,
