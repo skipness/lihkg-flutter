@@ -11,12 +11,14 @@ class ModalBottomSheet extends StatelessWidget {
     return Container(
         color: theme.canvasColor,
         child: Container(
-            height: MediaQuery.of(context).size.width,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.width,
+            ),
             decoration: BoxDecoration(
                 color: theme.primaryColor,
                 borderRadius: const BorderRadius.only(
                     topLeft: const Radius.circular(15.0),
                     topRight: const Radius.circular(15.0))),
-            child: child));
+            child: SafeArea(bottom: true, child: child)));
   }
 }

@@ -40,35 +40,35 @@ class ThreadModalBottomSheet extends StatelessWidget {
         final _threadBloc = BlocProvider.of<ThreadBloc>(context);
         final theme = Theme.of(context);
         return Expanded(
-            child: ListView.builder(
-                itemCount: _threadBloc.thread.totalPage ?? 1,
-                itemExtent: 50,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                      title: Text('第${index + 1}頁',
-                          style: theme.textTheme.subhead.copyWith(
-                              color: index + 1 == currentPage
-                                  ? theme.accentColor
-                                  : theme.hintColor)),
-                      onTap: () {
-                        if (currentPage == index + 1) return;
-                        onPageChange(index + 1);
-                        _threadBloc.dispatch(ChangePage(page: index + 1));
-                        Navigator.of(context).pop();
-                      });
-                },
-                physics: theme.platform == TargetPlatform.iOS
-                    ? const BouncingScrollPhysics()
-                    : const ClampingScrollPhysics(),
-                controller: scrollController));
+          child: ListView.builder(
+              itemCount: _threadBloc.thread.totalPage ?? 1,
+              itemExtent: 50,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                    title: Text('第${index + 1}頁',
+                        style: theme.textTheme.subhead.copyWith(
+                            color: index + 1 == currentPage
+                                ? theme.accentColor
+                                : theme.hintColor)),
+                    onTap: () {
+                      if (currentPage == index + 1) return;
+                      onPageChange(index + 1);
+                      _threadBloc.dispatch(ChangePage(page: index + 1));
+                      Navigator.of(context).pop();
+                    });
+              },
+              physics: theme.platform == TargetPlatform.iOS
+                  ? const BouncingScrollPhysics()
+                  : const ClampingScrollPhysics(),
+              controller: scrollController),
+        );
       });
 
   @override
   Widget build(BuildContext context) {
     return ModalBottomSheet(
-        child: SafeArea(
-            bottom: false,
-            child:
-                Column(children: <Widget>[_buildInfoRow(), _buildListView()])));
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[_buildInfoRow(), _buildListView()]));
   }
 }
