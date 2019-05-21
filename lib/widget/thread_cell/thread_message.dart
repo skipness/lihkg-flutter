@@ -29,16 +29,21 @@ class ThreadMessage extends StatelessWidget {
                   )))
               : const SizedBox(),
           threadItem.status == "1"
-              ? DefaultTextStyle(
-                  style: theme.textTheme.body1.merge(TextStyle(
+              ? HtmlWidget(
+                  linkify(threadItem.msg),
+                  wf: LihkgWidgetFactory(context),
+                  onTapUrl: (url) {
+                    InAppBrowser(context: context).open(url: url);
+                  },
+                  textPadding: EdgeInsets.zero,
+                  textStyle: theme.textTheme.body1.merge(TextStyle(
                       letterSpacing: 0.95,
                       height: 1.1,
                       fontSize: 17 * fontScale,
                       color: isQuote
                           ? theme.hintColor
                           : theme.textTheme.body1.color)),
-                  child: HtmlWidget(linkify(threadItem.msg),
-                      wfBuilder: (context) => LihkgWidgetFactory(context)))
+                )
               : const SizedBox()
         ]);
   }
