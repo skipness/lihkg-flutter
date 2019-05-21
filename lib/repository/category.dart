@@ -17,8 +17,16 @@ class CategoryRepository {
             deviceId: authenticationBloc.deviceId)
         .fetchCategory(subCategory.url, subCategory.catId, page,
             query: subCategory.query.toJson());
-    return result.errorCode != null
-        ? result.errorCode == 100 ? [] : throw result.errorMessage
-        : result.response.items;
+    if (result.errorCode != null) {
+      if (result.errorCode == 100) return [];
+      throw result.errorMessage;
+    } else {
+      List<Item> items = result.response.items;
+      items.removeWhere((Item item) =>
+          item.status != "1" ||
+          item.user.isBlocked == true ||
+          item.user.isDisappear == true);
+      return items;
+    }
   }
 }
