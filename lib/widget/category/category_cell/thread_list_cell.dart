@@ -16,18 +16,28 @@ class ThreadListCell extends StatelessWidget {
       Expanded(child: Builder(builder: (BuildContext context) {
         final theme = Theme.of(context);
         final double fontScale = PreferenceContext.of(context).preference;
-        return Column(children: <Widget>[
-          thread.isHot
-              ? Expanded(
-                  child: Icon(Icons.trending_up,
-                      size: 13 * fontScale, color: theme.accentColor),
-                )
-              : Expanded(child: const SizedBox()),
-          thread.isReplied
-              ? Icon(Icons.trending_up,
-                  size: 13 * fontScale, color: theme.iconTheme.color)
-              : Expanded(child: const SizedBox()),
-        ]);
+        return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              thread.isHot
+                  ? Expanded(
+                      child: Icon(Icons.trending_up,
+                          size: 13 * fontScale, color: theme.accentColor),
+                    )
+                  : SizedBox(),
+              thread.isReplied
+                  ? Expanded(
+                      child: Icon(Icons.reply,
+                          size: 13 * fontScale, color: theme.hintColor),
+                    )
+                  : SizedBox(), // Expanded(child: const SizedBox()),
+              thread.isBookmarked
+                  ? Expanded(
+                      child: Icon(Icons.bookmark,
+                          size: 13 * fontScale, color: theme.hintColor),
+                    )
+                  : SizedBox(), // Expanded(child: const SizedBox())
+            ]);
       }));
 
   Widget buildRightContainer() => Expanded(
@@ -70,8 +80,7 @@ class ThreadListCell extends StatelessWidget {
         child: InkWell(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ThreadPage(thread: thread),
-                  maintainState: true));
+                  builder: (context) => ThreadPage(thread: thread)));
             },
             child: IntrinsicHeight(
               child: Row(
