@@ -123,7 +123,7 @@ class _SearchPageState extends State<SearchPage>
                   textInputAction: TextInputAction.search,
                   onTextChanged: (text) {},
                   onTextSubmitted: (text) {
-                    if (text.isEmpty) {
+                    if (text.trim().isEmpty) {
                       Scaffold.of(context)
                           .showSnackBar(SnackBar(content: Text('關鍵字不能為空白')));
                     } else {
