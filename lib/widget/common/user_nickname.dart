@@ -3,14 +3,12 @@ import 'package:lihkg_flutter/model/model.dart';
 
 class UserNickname extends StatelessWidget {
   final User user;
-  final String nickname;
   final double fontSize;
 
-  const UserNickname(
-      {@required this.user, @required this.nickname, @required this.fontSize});
+  const UserNickname({@required this.user, @required this.fontSize});
 
   @override
-  Widget build(BuildContext context) => Text(nickname,
+  Widget build(BuildContext context) => Text(user.nickname,
       style: TextStyle(
           fontSize: fontSize,
           color: user.level == "999"
