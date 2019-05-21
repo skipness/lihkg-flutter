@@ -14,5 +14,8 @@ class _PersistenceTabviewState extends State<PersistenceTabview>
   bool get wantKeepAlive => true;
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
+  }
 }

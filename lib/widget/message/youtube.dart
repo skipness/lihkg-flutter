@@ -15,7 +15,8 @@ class _YoutubeState extends State<Youtube> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
 
   @override
-  build(BuildContext context) {
+  Widget build(BuildContext context) {
+    super.build(context);
     final backgroundColorHex =
         Theme.of(context).backgroundColor.value.toRadixString(16);
     return AspectRatio(

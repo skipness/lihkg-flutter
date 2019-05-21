@@ -54,6 +54,7 @@ class _CategoryListPageState extends State<CategoryListPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final theme = Theme.of(context);
     return Scaffold(
         body: Ink(
