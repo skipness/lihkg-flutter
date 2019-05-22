@@ -13,3 +13,4 @@ export 'package:lihkg_flutter/model/me.dart';
 export 'package:lihkg_flutter/model/profile.dart';
 export 'package:lihkg_flutter/model/vote_post.dart';
 export 'package:lihkg_flutter/model/reply.dart';
+export 'package:lihkg_flutter/model/bookmark.dart';

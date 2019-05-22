@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:lihkg_flutter/widget/thread_cell/thread_action.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
@@ -36,4 +38,23 @@ class VoteComment extends ThreadActionEvent {
 
   @override
   String toString() => 'Vote Thread $threadId for post $postId';
+}
+
+class BookmarkThread extends ThreadActionEvent {
+  String threadId;
+  int page;
+
+  BookmarkThread({@required this.threadId, @required this.page});
+
+  @override
+  String toString() => 'Bookmark thread $threadId, page $page';
+}
+
+class UnbookmarkThread extends ThreadActionEvent {
+  String threadId;
+
+  UnbookmarkThread({@required this.threadId});
+
+  @override
+  String toString() => 'Unbookmark thread $threadId';
 }

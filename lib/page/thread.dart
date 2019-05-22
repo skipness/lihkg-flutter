@@ -118,6 +118,16 @@ class _ThreadPageState extends State<ThreadPage> {
               Scaffold.of(context).showSnackBar(SnackBar(
                   content: Text("成功回覆"), duration: Duration(seconds: 5)));
             }
+
+            if (state is BookmarkedThread) {
+              Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("成功留名"), duration: Duration(seconds: 5)));
+            }
+
+            if (state is UnbookmarkedThread) {
+              Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("成功取消留名"), duration: Duration(seconds: 5)));
+            }
           },
           child: BlocProviderTree(blocProviders: [
             BlocProvider<ThreadBloc>(bloc: _threadBloc),

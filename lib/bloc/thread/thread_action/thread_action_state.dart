@@ -33,3 +33,13 @@ class CommentVoted extends ThreadActionState {
   @override
   String toString() => "Comment Voted";
 }
+
+class BookmarkedThread extends ThreadActionState {
+  @override
+  String toString() => "Bookmarked Thread";
+}
+
+class UnbookmarkedThread extends ThreadActionState {
+  @override
+  String toString() => "Unbookmarked Thread";
+}

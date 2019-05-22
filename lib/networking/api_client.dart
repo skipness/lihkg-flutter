@@ -91,4 +91,16 @@ class ApiClient {
         await _webClient.post("$_baseUrl/thread/reply", body: body);
     return Reply.fromJson(json.decode(response.body));
   }
+
+  Future<Bookmark> bookmark(String threadId, int page) async {
+    final response =
+        await _webClient.get("$_baseUrl/thread/$threadId/bookmark?page=$page");
+    return Bookmark.fromJson(json.decode(response.body));
+  }
+
+  Future<Bookmark> unbookmark(String threadId) async {
+    final response =
+        await _webClient.get("$_baseUrl/thread/$threadId/unbookmark");
+    return Bookmark.fromJson(json.decode(response.body));
+  }
 }

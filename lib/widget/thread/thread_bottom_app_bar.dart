@@ -16,6 +16,7 @@ class _ThreadBottomAppBarState extends State<ThreadBottomAppBar> {
   ThreadBloc _threadBloc;
   ThreadActionBloc _threadActionBloc;
   int currentPage = 1;
+  bool isBookmarked = false;
 
   @override
   void initState() {
@@ -33,9 +34,32 @@ class _ThreadBottomAppBarState extends State<ThreadBottomAppBar> {
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <
                 Widget>[
       Expanded(
-          child: IconButton(
-              icon: Icon(Icons.favorite, color: theme.iconTheme.color),
-              onPressed: () {})),
+          child: BlocBuilder<ThreadEvent, ThreadState>(
+        bloc: _threadBloc,
+        builder: (BuildContext context, ThreadState state) {
+          if (state is ThreadLoaded) {
+            isBookmarked = _threadBloc.thread.isBookmarked;
+            return IconButton(
+                icon: Icon(Icons.bookmark,
+                    color: isBookmarked
+                        ? theme.accentColor
+                        : theme.iconTheme.color),
+                onPressed: () {
+                  _threadActionBloc.dispatch(isBookmarked
+                      ? UnbookmarkThread(threadId: _threadBloc.thread.threadId)
+                      : BookmarkThread(
+                          threadId: _threadBloc.thread.threadId,
+                          page: currentPage));
+                  setState(() {
+                    isBookmarked == true
+                        ? isBookmarked = false
+                        : isBookmarked = true;
+                  });
+                });
+          }
+          return Icon(Icons.bookmark, color: theme.iconTheme.color);
+        },
+      )),
       Expanded(
           child: BlocBuilder(
         bloc: _preferenceBloc,

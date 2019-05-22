@@ -56,4 +56,31 @@ class ThreadRepository {
       return result.response;
     }
   }
+
+  Future<void> bookmark(int page, AuthenticationBloc authenticationBloc) async {
+    final result = await ApiClient(
+            userId: authenticationBloc.userId,
+            token: authenticationBloc.token,
+            deviceId: authenticationBloc.deviceId)
+        .bookmark(threadId, page);
+    if (result.errorCode != null) {
+      throw result.errorMessage;
+    } else {
+      return result.response;
+    }
+  }
+
+  Future<void> unbookmark(AuthenticationBloc authenticationBloc) async {
+    final result = await ApiClient(
+            userId: authenticationBloc.userId,
+            token: authenticationBloc.token,
+            deviceId: authenticationBloc.deviceId)
+        .unbookmark(threadId);
+    print(result.response.bookmarkThreadList);
+    if (result.errorCode != null) {
+      throw result.errorMessage;
+    } else {
+      return result.response;
+    }
+  }
 }

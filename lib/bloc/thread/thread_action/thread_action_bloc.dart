@@ -55,5 +55,27 @@ class ThreadActionBloc extends Bloc<ThreadActionEvent, ThreadActionState> {
         yield NoThreadAction();
       }
     }
+
+    if (event is BookmarkThread) {
+      try {
+        await threadRepository.bookmark(event.page, authenticationBloc);
+        yield BookmarkedThread();
+        yield NoThreadAction();
+      } catch (error) {
+        yield ThreadActionError(error: error.toString());
+        yield NoThreadAction();
+      }
+    }
+
+    if (event is UnbookmarkThread) {
+      try {
+        await threadRepository.unbookmark(authenticationBloc);
+        yield UnbookmarkedThread();
+        yield NoThreadAction();
+      } catch (error) {
+        yield ThreadActionError(error: error.toString());
+        yield NoThreadAction();
+      }
+    }
   }
 }
